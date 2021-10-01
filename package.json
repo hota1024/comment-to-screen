@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/express": "^4.17.13",
     "express": "^4.17.1",
     "next": "10.0.6",
     "react": "17.0.1",
