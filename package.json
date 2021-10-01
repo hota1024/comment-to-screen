@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsc -p tsconfig.server.json && node ./dist/server/index.js",
-    "build": "next build",
-    "start": "next start",
+    "build": "tsc -p tsconfig.server.json",
+    "start": "node ./dist/server/index.js",
     "lint": "eslint"
   },
   "dependencies": {
