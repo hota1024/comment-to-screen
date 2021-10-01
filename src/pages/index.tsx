@@ -7,9 +7,9 @@ import io from 'socket.io-client'
 import { CommnetViewer } from '../CommentViewer'
 
 type Query = {
-  fontSize?: number
-  stroke?: number
-  speedRatio?: number
+  fontSize?: string
+  stroke?: string
+  speedRatio?: string
   font?: string
   fontWeight?: FontWeight
   strokeColor?: string
@@ -40,14 +40,21 @@ export const HomePage: NextPage = () => {
 
     const options = createCanvasAppOptions(canvasRef.current)
     const viewer = new CommnetViewer(options)
-    viewer.fontSize = query.fontSize ?? viewer.fontSize
-    viewer.commentStroke = query.stroke ?? viewer.commentStroke
-    viewer.speedRatio = query.speedRatio ?? viewer.speedRatio
+    viewer.fontSize = query.fontSize
+      ? parseFloat(query.fontSize)
+      : viewer.fontSize
+    viewer.commentStroke = query.stroke
+      ? parseFloat(query.stroke)
+      : viewer.commentStroke
+    viewer.speedRatio = query.speedRatio
+      ? parseFloat(query.speedRatio)
+      : viewer.speedRatio
     viewer.font = query.font ?? viewer.font
     viewer.fontWeight = query.fontWeight ?? viewer.fontWeight
     viewer.strokeColor = query.strokeColor ?? viewer.strokeColor
     viewer.fillColor = query.fillColor ?? viewer.fillColor
     viewer.background = query.background ?? viewer.background
+    console.log(query, viewer)
     viewer.start()
 
     updateCanvasSize()
