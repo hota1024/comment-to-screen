@@ -27,7 +27,7 @@ export class CommnetViewer extends QratchApp {
   /**
    * speed ratio.
    */
-  speedRatio = 1.5
+  speedRatio = 1
 
   /**
    * comment font.
@@ -61,7 +61,7 @@ export class CommnetViewer extends QratchApp {
 
   private update() {
     this.comments = this.comments.filter((c) => {
-      c.pos.add(c.text.length / -this.speedRatio, 0)
+      c.pos.add(c.text.length * -this.speedRatio, 0)
 
       return c.pos.x > -this.commentWidth(c.text)
     })
