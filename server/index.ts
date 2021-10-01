@@ -1,5 +1,8 @@
+import http from 'http'
 import express, { Request, Response } from 'express'
+import * as SocketIO from 'socket.io'
 import next from 'next'
+import { Post } from '../src/models/Post'
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
@@ -7,15 +10,31 @@ const handle = app.getRequestHandler()
 const port = process.env.PORT || 3000
 
 app.prepare().then(() => {
-  const server = express()
-  server.use(express.json())
+  const app = express()
+  const server = new http.Server(app)
+  const io = new SocketIO.Server(server)
 
-  server.post('/', (req, res) => {
-    console.log(req.body)
+  app.use(express.json())
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  app.post<{}, {}, { post: Post }>('/', (req, res) => {
+    const comment = req.body.post.message
+
+    if (comment.includes('\n')) {
+      return
+    }
+
+    if (comment.length > 128) {
+      return
+    }
+
+    console.log(`[TypeTalk] ${comment}`)
+    io.emit('comment', comment)
+
     res.send()
   })
 
-  server.all('*', (req: Request, res: Response) => {
+  app.all('*', (req: Request, res: Response) => {
     return handle(req, res)
   })
 
