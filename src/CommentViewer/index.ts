@@ -1,4 +1,4 @@
-import { CanvasRenderer, QratchApp, Vec2 } from 'qratch'
+import { FontWeight, QratchApp, Vec2 } from 'qratch'
 
 type Comment = {
   pos: Vec2
@@ -15,14 +15,44 @@ export class CommnetViewer extends QratchApp {
   comments: Comment[] = []
 
   /**
-   * comment size.
+   * comment font size.
    */
-  commentSize = '24px'
+  fontSize = 24
 
   /**
    * comment stroke size.
    */
   commentStroke = 8
+
+  /**
+   * speed ratio.
+   */
+  speedRatio = 1.5
+
+  /**
+   * comment font.
+   */
+  font = `'Noto Sans JP'`
+
+  /**
+   * comment font weight.
+   */
+  fontWeight: FontWeight = 'bold'
+
+  /**
+   * comment stroke color.
+   */
+  strokeColor = 'white'
+
+  /**
+   * comment fill color.
+   */
+  fillColor = '#101010'
+
+  /**
+   * background color.
+   */
+  background = '#00ff00'
 
   frame(): void {
     this.update()
@@ -31,34 +61,54 @@ export class CommnetViewer extends QratchApp {
 
   private update() {
     this.comments = this.comments.filter((c) => {
-      c.pos.add(-1, 0)
+      c.pos.add(c.text.length / -this.speedRatio, 0)
 
-      return true
+      return c.pos.x > -this.commentWidth(c.text)
     })
   }
 
   private draw() {
     const { renderer, drawer } = this
 
-    renderer.fill('#00ff00')
-    drawer.fillText(`${this.comments.length}`, 0, 16, 'red', void 0, {
-      size: '16px',
-      font: 'sans-serif',
-    })
+    renderer.fill(this.background)
 
     this.comments.forEach((c) => {
       const { pos, text } = c
 
-      console.log(text, pos)
-      drawer.strokeText(text, pos, this.commentStroke, 'white', void 0, {
-        size: this.commentSize,
-        font: 'sans-serif',
-      })
-      drawer.fillText(text, pos, 'black', void 0, {
-        size: this.commentSize,
-        font: 'sans-serif',
-      })
+      drawer.strokeText(
+        text,
+        pos,
+        this.commentStroke,
+        this.strokeColor,
+        void 0,
+        {
+          size: this.fontSize,
+          font: this.font,
+          weight: this.fontWeight,
+        },
+        void 0,
+        'middle'
+      )
+      drawer.fillText(
+        text,
+        pos,
+        this.fillColor,
+        void 0,
+        {
+          size: this.fontSize,
+          font: this.font,
+          weight: this.fontWeight,
+        },
+        void 0,
+        'middle'
+      )
     })
+  }
+
+  commentWidth(text: string): number {
+    const context = this.renderer['context'] as CanvasRenderingContext2D
+    context.font = `${this.font} ${this.fontWeight}`
+    return context.measureText(text).width
   }
 
   addComment(text: string): void {

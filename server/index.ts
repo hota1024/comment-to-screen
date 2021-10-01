@@ -24,6 +24,10 @@ app.prepare().then(() => {
       return
     }
 
+    if (comment.length <= 1) {
+      return
+    }
+
     if (comment.length > 128) {
       return
     }
