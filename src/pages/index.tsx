@@ -9,7 +9,7 @@ import { CommnetViewer } from '../CommentViewer'
 type Query = {
   fontSize?: string
   stroke?: string
-  speedRatio?: string
+  duration?: string
   font?: string
   fontWeight?: FontWeight
   strokeColor?: string
@@ -46,9 +46,9 @@ export const HomePage: NextPage = () => {
     viewer.commentStroke = query.stroke
       ? parseFloat(query.stroke)
       : viewer.commentStroke
-    viewer.speedRatio = query.speedRatio
-      ? parseFloat(query.speedRatio)
-      : viewer.speedRatio
+    viewer.duration = query.duration
+      ? parseFloat(query.duration)
+      : viewer.duration
     viewer.font = query.font ?? viewer.font
     viewer.fontWeight = query.fontWeight ?? viewer.fontWeight
     viewer.strokeColor = query.strokeColor ?? viewer.strokeColor

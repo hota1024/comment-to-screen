@@ -25,9 +25,9 @@ export class CommnetViewer extends QratchApp {
   commentStroke = 8
 
   /**
-   * speed ratio.
+   * duration.
    */
-  speedRatio = 0.1
+  duration = 6000
 
   /**
    * comment font.
@@ -60,8 +60,14 @@ export class CommnetViewer extends QratchApp {
   }
 
   private update() {
+    const fps = this.ticker.getTargetFPS()
+
     this.comments = this.comments.filter((c) => {
-      c.pos.add(this.commentWidth(c.text) * -this.speedRatio, 0)
+      // c.pos.add(this.commentWidth(c.text) * -this.duration, 0)
+      const distance = this.commentWidth(c.text) + this.renderer.width
+      const v = distance / ((this.duration / 1000) * fps)
+
+      c.pos.x -= v
 
       return c.pos.x > -this.commentWidth(c.text)
     })
