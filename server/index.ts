@@ -7,7 +7,8 @@ import { Post } from '../src/models/Post'
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
-const port = process.env.PORT || 3000
+const port = process.env.PORT ?? 3000
+const basePath = process.env.BASE_PATH ?? '/'
 
 app.prepare().then(() => {
   const app = express()
@@ -17,7 +18,7 @@ app.prepare().then(() => {
   app.use(express.json())
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  app.post<{}, {}, { post: Post }>('/', (req, res) => {
+  app.post<{}, {}, { post: Post }>(`${basePath}`, (req, res) => {
     const comment = req.body.post.message
 
     if (comment.includes('\n')) {
@@ -38,11 +39,16 @@ app.prepare().then(() => {
     res.send()
   })
 
-  app.all('*', (req: Request, res: Response) => {
+  app.all(`${basePath}*`, (req: Request, res: Response) => {
     return handle(req, res)
   })
 
   server.listen(port, () => {
-    console.log(`> Ready on localhost:${port} - env ${process.env.NODE_ENV}`)
+    console.log(
+      `[Server] ready on localhost:${port} - env ${
+        process.env.NODE_ENV ?? 'development'
+      }`
+    )
+    console.log(`[Server] base path: ${basePath}`)
   })
 })
